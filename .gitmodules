@@ -1,0 +1,3 @@
+[submodule "madi"]
+	path = madi
+	url = https://github.com/google/madi
