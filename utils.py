@@ -25,7 +25,10 @@ def train_eval(learning_algo, ds_train, ds_val, ds_test):
 
 
   y_pred = learning_algo.predict(ds_test)
-  y_test = ds_test[:,-1]
+  if type(ds_test) == np.ndarray:
+    y_test = ds_test[:,-1]
+  else:
+    y_test = ds_test.labels
   mat = confusion_matrix(y_test, y_pred)
   sns.set(rc = {'figure.figsize':(8,8)})
   sns.heatmap(mat.T, square=True, annot=True, fmt='d', cbar=False,
@@ -76,14 +79,14 @@ def get_generators():
     train_generator = train_datagen.flow_from_directory(
             'data/training/',
             classes = ['interesting_waterfall', 'uninteresting_waterfall'],
-            target_size=(100, 600),
+            target_size=(200, 200),
             batch_size=120,
             class_mode='binary')
 
     validation_generator = validation_datagen.flow_from_directory(
             'data/validation/',
             classes = ['interesting_waterfall', 'uninteresting_waterfall'],
-            target_size=(100, 600),
+            target_size=(200, 200),
             batch_size=80,
             class_mode='binary',
             shuffle=False)
@@ -92,7 +95,7 @@ def get_generators():
     test_generator = test_datagen.flow_from_directory(
             'data/test/',
             classes = ['interesting_waterfall', 'uninteresting_waterfall'],
-            target_size=(100, 600),
+            target_size=(200, 200),
             batch_size=120,
             class_mode='binary')
 
@@ -104,6 +107,14 @@ def gather_files(path, mode, data, y_value, start_index):
     index = start_index
     for file in path_files:
         data[index] = np.append(get_differences(path + file, mode), y_value)
+        index+=1
+    return np.array(data)
+
+def gather_off_files(path,mode,data,y_value,start_index):
+    path_files = os.listdir(path)
+    index = start_index
+    for file in path_files:
+        data[index] = np.append(gather_values(path + file, "Off", mode), y_value)
         index+=1
     return np.array(data)
 

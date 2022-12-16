@@ -114,15 +114,15 @@ def generate_images(options: dict):
     with open(log_file, "w+") as f:
         f.write("image,#classification\n")
     for i in range(0, options.uninteresting):
-       num_rfi = random.randint(1,4)
-       cadenceGroup = CadenceGroup(save_dir = options.output + "/uninteresting/", name=str(i), num_rfi=num_rfi)
+       num_rfi = 1
+       cadenceGroup = CadenceGroup(save_dir = options.output + "/uninteresting_waterfall/", name=str(i), num_rfi=num_rfi)
        cadenceGroup.update_frames()
        cadenceGroup.save_waterfall_plots(log_file)
        cadenceGroup.save_h5_files()
 
     for i in range(0, options.interesting):
-        num_rfi = random.randint(0,3)
-        cadenceGroup = CadenceGroup(save_dir = options.output + "/interesting/", name=str(i), num_rfi=num_rfi, num_interesting=1)
+        num_rfi = 0
+        cadenceGroup = CadenceGroup(save_dir = options.output + "/interesting_waterfall/", name=str(i), num_rfi=num_rfi, num_interesting=1)
         cadenceGroup.update_frames()
         cadenceGroup.save_waterfall_plots(log_file)
         cadenceGroup.save_h5_files()
@@ -134,12 +134,12 @@ def generate_images(options: dict):
 def generate_h5(options:dict):
 
     for i in range(0, options.uninteresting):
-       cadenceGroup = CadenceGroup(save_dir = options.output + "/uninteresting/", name=str(i), num_rfi=random.randint(1,3),fchans=random.randint(10000,100000))
+       cadenceGroup = CadenceGroup(save_dir = options.output + "/uninteresting_h5/", name=str(i), num_rfi=random.randint(1,3),fchans=random.randint(10000,100000))
        cadenceGroup.update_frames()
        cadenceGroup.save_h5_files()
 
     for i in range(0, options.interesting):
-        cadenceGroup = CadenceGroup(save_dir = options.output + "/interesting/", name=str(i), num_rfi=random.randint(1,3), num_interesting=random.randit(1,3),fchans=random.randint(10000,100000))
+        cadenceGroup = CadenceGroup(save_dir = options.output + "/interesting_h5/", name=str(i), num_rfi=random.randint(1,3), num_interesting=random.randit(1,3),fchans=random.randint(10000,100000))
         cadenceGroup.update_frames()
         cadenceGroup.save_h5_files()
 

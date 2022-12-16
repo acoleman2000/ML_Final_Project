@@ -258,10 +258,10 @@ class CadenceGroup(object):
 
         plt.subplots_adjust(hspace=0,wspace=0)
 
-        if not os.path.exists("%s/waterfall/"%(self.save_dir)):
-            os.makedirs("%s/waterfall/"%(self.save_dir))
+        if not os.path.exists("%s"%(self.save_dir)):
+            os.makedirs("%s"%(self.save_dir))
 
-        plt.savefig("%s/waterfall/%s.png"%(self.save_dir, self.name))
+        plt.savefig("%s%s.png"%(self.save_dir, self.name))
         plt.close(fig[0])
         classifcation = "interesting" if len(self.interesting_signals) > 0 else "uninteresting"
         with open(manifest, "a") as f:
@@ -273,8 +273,8 @@ class CadenceGroup(object):
             frame_index += "_" + str(math.floor(1 + 0.5 * (i)))
 
 
-            if not os.path.exists("%s/h5/%s/"%(self.save_dir, self.name)):
-                os.makedirs("%s/h5/%s/"%(self.save_dir, self.name))
+            if not os.path.exists("%s%s/"%(self.save_dir, self.name)):
+                os.makedirs("%s%s/"%(self.save_dir, self.name))
 
 
-            cadence.frame.save_h5(filename='%s/h5/%s/frame_%s.h5'%(self.save_dir, self.name, frame_index))
+            cadence.frame.save_h5(filename='%s%s/frame_%s.h5'%(self.save_dir, self.name, frame_index))

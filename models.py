@@ -3,6 +3,7 @@ import tensorflow as tf
 from sklearn.svm import OneClassSVM
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.ensemble import IsolationForest
+import numpy as np
 
 #@title Define a base class class for Learning Algorithm
 
@@ -54,12 +55,13 @@ class RF(BaseLearningAlgorithm):
         return "Random Forest Classifier"
 
 class IF(BaseLearningAlgorithm):
-    def __init__(self, max_samples, n_estimators, contamination, bootstrap):
+    def __init__(self, max_samples, n_estimators, contamination, bootstrap,mode):
         self._max_samples = max_samples
         self._n_estimators = n_estimators
         self._contamination = contamination
         self._bootstrap = bootstrap
         self._model = IsolationForest(max_samples= max_samples, n_estimators=n_estimators,contamination=contamination, bootstrap=bootstrap)
+        self._mode = mode
 
     def fit(self, ds_train, ds_val):
         X_train = ds_train[:,0:-2]
@@ -69,6 +71,8 @@ class IF(BaseLearningAlgorithm):
     def predict(self, ds_test):
         X_test = ds_test[:,0:-2]
         f = lambda x: 0 if x == 1 else 1
+        if self._mode == "flip":
+            f = lambda x: 1 if x == 1 else 0
         prediction = self._model.predict(X_test)
         return list(map(f, prediction))
 
@@ -77,11 +81,12 @@ class IF(BaseLearningAlgorithm):
 
 
 class OCSVM(BaseLearningAlgorithm):
-    def __init__(self, kernel, gamma, tol):
+    def __init__(self, kernel, gamma, tol,mode):
         self._kernel = kernel
         self._gamma = gamma
         self._tol = tol
         self._model = OneClassSVM(kernel=kernel, gamma=gamma, tol=tol)
+        self._mode = mode
 
     def fit(self, ds_train, ds_val):
         X_train = ds_train[:,0:-2]
@@ -91,6 +96,8 @@ class OCSVM(BaseLearningAlgorithm):
     def predict(self, ds_test):
         X_test = ds_test[:,0:-2]
         f = lambda x: 0 if x == 1 else 1
+        if self._mode == "flip":
+            f = lambda x: 1 if x == 1 else 0
         prediction = self._model.predict(X_test)
         return list(map(f, prediction))
 
@@ -130,7 +137,9 @@ class CNN(BaseLearningAlgorithm):
             validation_steps=self._validation_steps)
 
     def predict(self, ds_test):
-        X_test = ds_test[:,0:-2]
-        return self._model.predict(X_test)
+        prediction = self._model.predict(ds_test)
+        # f = lambda x: np.round(x)
+        # return list(map(f, prediction))
+        return np.round(prediction)
     def name(self):
         print("Convolutional Neural Network")
